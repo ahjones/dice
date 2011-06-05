@@ -3,7 +3,7 @@ body {
     text-align: center;
 }
 
-#number {
+.number {
     color:#FF5B00;
     font-size:10em;
     border-style: solid;

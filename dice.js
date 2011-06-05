@@ -3,11 +3,16 @@ var throw_dice = function() {
         return 1 + (Math.floor(Math.random() * 6));
     };
 
-    var el = document.getElementById("number");
-    el.innerHTML = generate().toString();
+    var els = document.getElementsByClassName("number");
+    for (var i = 0; i < els.length; i++) {
+        els[i].innerHTML = generate().toString();
+    }
 };
 
 window.onload = function () {
-    document.getElementById("number").onclick = throw_dice;
+    var els = document.getElementsByClassName("number");
+    for (var i = 0; i < els.length; i++) {
+        els[i].onclick = throw_dice;
+    }
     throw_dice();
 };
