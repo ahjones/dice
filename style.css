@@ -3,15 +3,31 @@ body {
     text-align: center;
 }
 
-.number {
+.dice {
     color:#FF5B00;
     font-size:10em;
     border-style: solid;
     border-color: #7495AB;
     border-width: .1em;
     width: 1em;
-    margin: 1em;
+    margin: 1em .25em;
     background-color:#32556B;
     border-radius: 15px;
     display: inline-block;
+}
+
+.number {
+    color:#FF5B00;
+    font-size:10em;
+    border-style: solid;
+    border-color: #7495AB;
+    background-color:#32556B;
+}
+
+.ghost {
+    color:#FF5B00;
+    font-size:10em;
+    border-style: dotted;
+    border-color: #7495AB;
+    background-color:#32556B;
 }
