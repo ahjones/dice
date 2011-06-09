@@ -1,5 +1,17 @@
 body {
     background-color:black;
+}
+
+p {
+    margin: 0 auto;
+    width: 10px;
+}
+
+.header {
+    height: 50px;
+}
+
+.container {
     text-align: center;
 }
 
@@ -10,10 +22,11 @@ body {
     border-color: #7495AB;
     border-width: .1em;
     width: 1em;
-    margin: 1em .25em;
+    margin: 0 .25em;
     background-color:#32556B;
     border-radius: 15px;
     display: inline-block;
+    text-align: center;
 }
 
 .number {

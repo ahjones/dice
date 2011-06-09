@@ -10,7 +10,7 @@ var throw_dice = function() {
 };
 
 var new_dice = function () {
-    var body = document.getElementsByTagName("body")[0];
+    var container = document.getElementsByClassName("container")[0];
     var ghost = document.getElementsByClassName("ghost")[0];
 
     var dice = document.createElement("span");
@@ -19,10 +19,11 @@ var new_dice = function () {
     dice.innerHTML = generate().toString();
     dice.onclick = throw_dice;
 
-    body.insertBefore(dice, ghost);
+    container.insertBefore(dice, ghost);
 };
 
 window.onload = function () {
     var ghost = document.getElementsByClassName("ghost")[0];
     ghost.onclick = new_dice;
+    new_dice();
 };
