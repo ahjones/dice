@@ -21,19 +21,26 @@ var new_dice = function () {
     var template = get_dice_template();
     var number = generate().toString();
     var dice_id = "dice_" + next_dice_id;
-    next_dice_id++;
 
-    var html = template.replace("{{num}}", number)
-                       .replace("{{id}}", dice_id);
+    var html = template.replace(/{{num}}/g, number)
+                       .replace(/{{id}}/g, next_dice_id.toString());
 
     var dice = load_html(html);
 
     var container = document.getElementsByClassName("container")[0];
     var ghost = document.getElementsByClassName("ghost")[0].parentNode;
     container.insertBefore(dice, ghost);
-    document.getElementById(dice_id)
-            .getElementsByClassName("number")[0]
-            .onclick = throw_dice;
+
+    whole_dice = document.getElementById(dice_id);
+    whole_dice.getElementsByClassName("number")[0].onclick = throw_dice;
+    document.getElementById("close_dice_" + next_dice_id)
+            .onclick = delete_dice;
+    next_dice_id++;
+}
+
+var delete_dice = function () {
+    var dice = document.getElementById(this.id.replace("close_", ""));
+    dice.parentNode.removeChild(dice);
 }
 
 var load_html = function (html_string) {
