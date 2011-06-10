@@ -13,7 +13,7 @@ var new_dice = function () {
     var container = document.getElementsByClassName("container")[0];
     var ghost = document.getElementsByClassName("ghost")[0];
 
-    var dice = document.createElement("span");
+    var dice = document.createElement("div");
 
     dice.setAttribute("class", "number dice");
     dice.innerHTML = generate().toString();
