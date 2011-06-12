@@ -6,7 +6,7 @@ body {
     height: 50px;
 }
 
-.container {
+#container {
     margin: 0 auto;
     display: table;
 }

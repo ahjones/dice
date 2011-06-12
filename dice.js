@@ -1,62 +1,117 @@
-var generate = function() {
-    return 1 + (Math.floor(Math.random() * 6));
-};
+var dice = (function () {
+    var generate = function() {
+        return 1 + (Math.floor(Math.random() * 6));
+    };
 
-var throw_dice = function() {
-    var els = document.getElementsByClassName("number");
-    for (var i = 0; i < els.length; i++) {
-        els[i].innerHTML = generate().toString();
-    }
-};
+    var throw_dice = function() {
+        var els = document.getElementsByClassName("number");
+        for (var i = 0; i < els.length; i++) {
+            els[i].innerHTML = generate().toString();
+        }
+        save_state();
+    };
 
-var get_dice_template = function () {
-    var request = new XMLHttpRequest();
-    request.open("GET", "dice_template.html", false);
-    request.send(null);
-    return request.responseText;
-}
+    var get_template = function (fname) {
+        var request = new XMLHttpRequest();
+        request.open("GET", fname, false);
+        request.send(null);
+        return request.responseText;
+    };
 
-var next_dice_id = 0;
-var new_dice = function () {
-    var template = get_dice_template();
-    var number = generate().toString();
-    var dice_id = "dice_" + next_dice_id;
+    var get_dice_template = function () {
+        return get_template("dice_template.html");
+    };
 
-    var html = template.replace(/{{num}}/g, number)
-                       .replace(/{{id}}/g, next_dice_id.toString());
+    var get_ghost_template = function () {
+        return get_template("ghost_template.html");
+    };
 
-    var dice = load_html(html);
+    var new_dice = function () {
+        create_dice(generate().toString());
+        save_state();
+    };
 
-    var container = document.getElementsByClassName("container")[0];
-    var ghost = document.getElementsByClassName("ghost")[0].parentNode;
-    container.insertBefore(dice, ghost);
+    var next_dice_id = 0;
+    var create_dice = function (number) {
+        var template = get_dice_template();
+        var dice_id = "dice_" + next_dice_id;
 
-    whole_dice = document.getElementById(dice_id);
-    whole_dice.getElementsByClassName("number")[0].onclick = throw_dice;
-    document.getElementById("close_dice_" + next_dice_id)
-            .onclick = delete_dice;
-    next_dice_id++;
-}
+        var html = template.replace(/{{num}}/g, number)
+                           .replace(/{{id}}/g, next_dice_id.toString());
 
-var delete_dice = function () {
-    var dice = document.getElementById(this.id.replace("close_", ""));
-    dice.parentNode.removeChild(dice);
-}
+        var dice = load_html(html);
 
-var load_html = function (html_string) {
-    var elt = document.createElement("div");
-    var frag = document.createDocumentFragment();
-    elt.innerHTML = html_string;
+        var container = document.getElementById("container");
+        var ghost = document.getElementsByClassName("ghost")[0].parentNode;
+        container.insertBefore(dice, ghost);
 
-    while (elt.firstChild) {
-        frag.appendChild(elt.firstChild);
-    }
+        whole_dice = document.getElementById(dice_id);
+        whole_dice.getElementsByClassName("number")[0].onclick = throw_dice;
+        document.getElementById("close_dice_" + next_dice_id)
+                .onclick = delete_dice;
+        next_dice_id++;
+    };
 
-    return frag;
-};
+    var delete_dice = function () {
+        save_state();
+        var dice = document.getElementById(this.id.replace("close_", ""));
+        dice.parentNode.removeChild(dice);
+        return false;
+    };
 
-window.onload = function () {
-    var ghost = document.getElementsByClassName("ghost")[0];
-    ghost.onclick = new_dice;
-    new_dice();
-};
+    var load_html = function (html_string) {
+        var elt = document.createElement("div");
+        var frag = document.createDocumentFragment();
+        elt.innerHTML = html_string;
+
+        while (elt.firstChild) {
+            frag.appendChild(elt.firstChild);
+        }
+
+        return frag;
+    };
+
+    var save_state = function () {
+        var dice = document.getElementsByClassName("number");
+        var numbers = []
+        for (var i = 0; i < dice.length; i++) {
+           numbers.push(dice[i].innerHTML); 
+        }
+
+        history.pushState( { numbers: numbers }, "" );
+    };
+
+    var restore_state = function (event) {
+        if (event.state) {
+            var container = document.getElementById("container");
+            container.innerHTML = "";
+
+            add_ghost();
+            for (var num in event.state.numbers) {
+                create_dice(event.state.numbers[num]);
+            }
+        }
+    };
+
+    var add_ghost = function () {
+        var ghost = load_html(get_ghost_template());
+        var body = document.getElementById("container");
+        body.appendChild(ghost);
+        ghost = document.getElementById("ghost");
+        ghost.onclick = new_dice;
+    };
+
+    var init = function () {
+        add_ghost();
+        new_dice();
+        save_state();
+    };
+
+    return {
+        init: init,
+        popState: restore_state
+    };
+}());
+
+window.onload = dice.init;
+window.onpopstate = dice.popState;
